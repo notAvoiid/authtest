@@ -51,9 +51,10 @@ public class UserServiceTest {
             var response = authService.register(REQUEST);
 
             assertNotNull(response);
-            assertEquals(USER_LOGIN.getUsername(), response.username());
-            assertEquals(EXPIRATION_DATE.toString(), response.expiresAt());
-            assertEquals(TOKEN, response.token());
+            assertEquals(RESPONSE.getClass(), response.getClass());
+            assertEquals(RESPONSE.username(), response.username());
+            assertEquals(RESPONSE.token(), response.token());
+            assertEquals(RESPONSE.expiresAt(), response.expiresAt());
 
             verify(userRepository, times(1)).save(any(User.class));
         }
@@ -106,9 +107,10 @@ public class UserServiceTest {
             var response = authService.login(AUTHENTICATION);
 
             assertNotNull(response);
-            assertEquals(USERNAME, response.username());
-            assertEquals(TOKEN, response.token());
-            assertEquals(EXPIRATION_DATE.toString(), response.expiresAt());
+            assertEquals(RESPONSE.getClass(), response.getClass());
+            assertEquals(RESPONSE.username(), response.username());
+            assertEquals(RESPONSE.token(), response.token());
+            assertEquals(RESPONSE.expiresAt(), response.expiresAt());
 
             verify(userRepository, times(1)).findByUsername(USERNAME);
             verify(encoder, times(1)).matches(PASSWORD, USER_LOGIN.getPassword());
