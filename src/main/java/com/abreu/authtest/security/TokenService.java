@@ -25,7 +25,6 @@ public class TokenService {
     private String secretKey;
 
     private Algorithm algorithm;
-    private Date now;
 
     public TokenService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -35,19 +34,17 @@ public class TokenService {
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
         algorithm = Algorithm.HMAC256(secretKey.getBytes());
-        now = new Date();
     }
 
     public String generateToken(User data) {
         try {
             return JWT.create()
-                    .withClaim("role", String.valueOf(data.getUserRole()))
+                    .withClaim("role", data.getUserRole().toString())
                     .withIssuer("authetest")
                     .withSubject(data.getUsername())
-                    .withIssuedAt(now)
-                    .withExpiresAt(getExpirationDate())
-                    .sign(algorithm)
-                    .strip();
+                    .withIssuedAt(new Date())
+                    .withExpiresAt(Date.from(getExpirationDate()))
+                    .sign(algorithm);
         } catch (JWTCreationException ex) {
             throw new JWTCreationException("Error while generating token. Try again later!", ex);
         }
