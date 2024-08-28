@@ -10,3 +10,16 @@ services:
       - POSTGRES_PASSWORD=admin123
       - POSTGRES_USER=postgres
       - POSTGRES_DB=authtest
+
+  api:
+    build: .
+    restart: always
+    image: authtest:1.0
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING.DATASOURCE.URL: jdbc:postgresql://db:5432/authtest
+      SPRING.DATASOURCE.USERNAME: postgres
+      SPRING.DATASOURCE.PASSWORD: admin123
+    depends_on:
+      - db
