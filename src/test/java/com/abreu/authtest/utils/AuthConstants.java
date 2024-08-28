@@ -21,7 +21,7 @@ public class AuthConstants {
     public static final Instant EXPIRATION_DATE = Instant.now().plus(1, ChronoUnit.HOURS);
     public static final String URL = "/auth";
 
-    public static final RegisterDTO REQUEST = new RegisterDTO(NAME, EMAIL, USERNAME, PASSWORD, USER_ROLE);
+    public static final RegisterDTO REQUEST = new RegisterDTO(NAME, EMAIL, USERNAME, PASSWORD);
     public static final User USER_LOGIN = new User(1L, NAME, EMAIL, USERNAME, PASSWORD, USER_ROLE);
     public static final AuthenticationDTO AUTHENTICATION = new AuthenticationDTO(USERNAME, PASSWORD);
     public static final LoginResponseDTO RESPONSE = new LoginResponseDTO(USERNAME, TOKEN, EXPIRATION_DATE.toString());
