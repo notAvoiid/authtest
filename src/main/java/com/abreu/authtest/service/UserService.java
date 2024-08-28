@@ -50,7 +50,7 @@ public class UserService {
     public LoginResponseDTO register(RegisterDTO data) {
 
         if (userRepository.existsByUsername(data.username()) || userRepository.existsByEmail(data.email())) throw new RuntimeException("test");
-        User newUser = new User(data.name(), data.email(), data.username(), encoder.encode(data.password()), data.userRole());
+        var newUser = new User(data.name(), data.email(), data.username(), encoder.encode(data.password()));
         userRepository.save(newUser);
 
         var token = tokenService.generateToken(newUser);
