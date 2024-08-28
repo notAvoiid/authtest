@@ -81,7 +81,7 @@ public class UserControllerTest {
                             .contentType(APPLICATION_JSON)
                             .content(userJson)
                             .with(csrf()))
-                    .andExpect(status().isCreated())
+                    .andExpect(status().isOk())
                     .andExpect(header().string(CONTENT_TYPE, APPLICATION_JSON_VALUE))
 
                     .andExpect(jsonPath("$.username").value(RESPONSE.username()))
