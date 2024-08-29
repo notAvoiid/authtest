@@ -10,6 +10,11 @@ services:
       - POSTGRES_PASSWORD=admin123
       - POSTGRES_USER=postgres
       - POSTGRES_DB=authtest
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d authtest -U postgres"]
+      timeout: 5s
+      interval: 1s
+      retries: 3
 
   api:
     build: .
@@ -22,4 +27,5 @@ services:
       SPRING.DATASOURCE.USERNAME: postgres
       SPRING.DATASOURCE.PASSWORD: admin123
     depends_on:
-      - db
+      db:
+        condition: service_healthy
