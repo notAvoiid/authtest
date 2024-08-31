@@ -4,28 +4,45 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    expose:
-      - '5432'
     environment:
-      - POSTGRES_PASSWORD=admin123
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=authtest
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_DATABASE}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d authtest -U postgres"]
       timeout: 5s
-      interval: 1s
+      interval: 10s
       retries: 3
-
+      start_period: 30s
+    networks:
+      - authtest
+    volumes:
+      - db_authtest:/var/lib/postgresql/data
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: avoiid/authtest:latest
     restart: always
-    image: authtest:1.0
     ports:
       - "8080:8080"
     environment:
-      SPRING.DATASOURCE.URL: jdbc:postgresql://db:5432/authtest
-      SPRING.DATASOURCE.USERNAME: postgres
-      SPRING.DATASOURCE.PASSWORD: admin123
+      SPRING_DATASOURCE_URL: ${DB_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SECRET_TOKEN: ${SECRET_TOKEN}
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - authtest
+    volumes:
+      - api_authtest:/var/lib/app
+
+networks:
+  authtest:
+    driver: bridge
+
+volumes:
+  db_authtest:
+  api_authtest:
