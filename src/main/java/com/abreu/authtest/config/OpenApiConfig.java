@@ -16,10 +16,10 @@ public class OpenApiConfig {
         final String LINKED_IN = "https://www.linkedin.com/in/igoranascimento/";
         return new OpenAPI()
                 .info(new Info()
-                        .title("Product store")
+                        .title("Authentication Test")
                         .version("v1.0")
-                        .description("This API is a CRUD!")
-                        .summary("This API is a CRUD!")
+                        .description("This API is an authentication test!")
+                        .summary("This API is an authentication test!")
                         .termsOfService(LINKED_IN)
                         .contact(new Contact().name("Igor").url(LINKED_IN).email("igorabreu.dev@gmail.com"))
                         .license(new License().name("Apache 2.0").url(LINKED_IN)))
