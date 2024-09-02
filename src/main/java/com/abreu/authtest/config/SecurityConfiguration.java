@@ -28,7 +28,6 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        final String ADMIN_ROLE = "ADMIN";
         final String USER_ROLE = "USER";
         return http
                 .csrf(csrf -> csrf.disable())
@@ -36,6 +35,8 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/hello").hasRole(USER_ROLE)
+//                        .requestMatchers(HttpMethod.GET, "/hello").authenticated()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )

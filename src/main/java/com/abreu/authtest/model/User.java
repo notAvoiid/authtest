@@ -36,14 +36,14 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole userRole = UserRole.USER;
-
+    private UserRole userRole;
 
     public User(String name, String email, String username, String password) {
         this.name = name;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.userRole = UserRole.USER;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.abreu.authtest.model.User;
 import com.abreu.authtest.model.dto.AuthenticationDTO;
 import com.abreu.authtest.model.dto.LoginResponseDTO;
 import com.abreu.authtest.model.dto.RegisterDTO;
+import com.abreu.authtest.model.enums.UserRole;
 import com.abreu.authtest.repository.UserRepository;
 import com.abreu.authtest.security.TokenService;
 import lombok.extern.slf4j.Slf4j;

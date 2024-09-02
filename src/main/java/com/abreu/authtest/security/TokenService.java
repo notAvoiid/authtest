@@ -6,6 +6,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class TokenService {
                     .withClaim("role", data.getUserRole().toString())
                     .withIssuer("authetest")
                     .withSubject(data.getUsername())
-                    .withIssuedAt(new Date())
+                    .withIssuedAt(new Date().toInstant())
                     .withExpiresAt(Date.from(getExpirationDate()))
                     .sign(algorithm);
         } catch (JWTCreationException ex) {
@@ -72,11 +73,15 @@ public class TokenService {
     }
 
     public String getRoleFromToken(String token) {
-        return JWT.require(algorithm)
+        try {
+            DecodedJWT jwt = JWT.require(algorithm)
                 .withIssuer("authetest")
                 .build()
-                .verify(token)
-                .getClaim("role").asString();
+                .verify(token);
+            return jwt.getClaim("role").asString();
+        } catch (JWTVerificationException ex) {
+            throw new JWTVerificationException("Token verification failed. Please authenticate again.", ex);
+        }
     }
 
     public Instant getExpirationDateFromToken(String token) {

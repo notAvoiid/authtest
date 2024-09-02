@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -38,21 +38,24 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (token != null && tokenService.validateToken(token)) {
             var username = tokenService.getUsernameFromToken(token);
-            var user = userRepository.findByUsername(username);
             var role = tokenService.getRoleFromToken(token);
+            var user = userRepository.findByUsername(username).orElse(null);
 
-            if (user.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
-                var authentication = new UsernamePasswordAuthenticationToken(user , null, Collections.singleton(() -> role));
+            if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                var authorities = AuthorityUtils.createAuthorityList("ROLE_" + role);
+                var authentication = new UsernamePasswordAuthenticationToken(user , null, authorities);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+        } else {
+            SecurityContextHolder.clearContext();
         }
         filterChain.doFilter(request, response);
     }
 
     public String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader(AUTHORIZATION);
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
-        return authHeader.substring(7);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) return authHeader.substring(7);
+        return null;
     }
 }
