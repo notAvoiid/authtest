@@ -68,7 +68,7 @@ spring.datasource.password=${DB_PASSWORD}
 
 # 6. Inicialize o projeto utilizando o docker-compose.yml:
 
-docker compose --env-file .env up --build -d
+docker compose --env-file .env up -d
 ```
 
 ## 📄 Documentação
