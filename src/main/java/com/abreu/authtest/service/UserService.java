@@ -4,7 +4,6 @@ import com.abreu.authtest.model.User;
 import com.abreu.authtest.model.dto.AuthenticationDTO;
 import com.abreu.authtest.model.dto.LoginResponseDTO;
 import com.abreu.authtest.model.dto.RegisterDTO;
-import com.abreu.authtest.model.enums.UserRole;
 import com.abreu.authtest.repository.UserRepository;
 import com.abreu.authtest.security.TokenService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +41,7 @@ public class UserService {
         var auth = authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        log.info("An user is authenticated!");
+        log.info("User: {} is authenticated!", auth.getName());
 
         return new LoginResponseDTO(auth.getName(), token, tokenService.getExpirationDateFromToken(token).toString());
     }
@@ -56,7 +55,7 @@ public class UserService {
 
         var token = tokenService.generateToken(newUser);
 
-        log.info("Registered an user!!");
+        log.info("Registered user: {}!!", newUser.getUsername());
 
         return new LoginResponseDTO(data.username(), token, tokenService.getExpirationDateFromToken(token).toString());
     }
