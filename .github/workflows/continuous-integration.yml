@@ -1,0 +1,30 @@
+name: Continuous Integration with Github Actions
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Get code
+        uses: actions/checkout@v4.1.7
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3.3.0
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PWD }}
+    
+      - name: Build and Push Docker Images
+        uses: docker/build-push-actions@v6.7.0
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USER }}/authtest:${{ github.run_number }}
+            ${{ secrets.DOCKER_USER }}/authtest:latest
